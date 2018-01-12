@@ -16,6 +16,7 @@ void add(Student* newStudent, Node* &head);
 void print(Node* next);
 void deleteStudent(char* studentName, Node* head);
 void toLowerCase(char (&arr)[80]);
+void printAverage(Node* head);
 
 int main(){
      //Fix the head of the linked list
@@ -85,7 +86,7 @@ void add(Student* newStudent, Node* &head){
 //Function that prints out every node
 void print(Node* next){
      //Use Carson's brilliant print function that makes total sense to print out the linked list
-     current->print();
+     next->print();
 }
 //Function that can delete an item of the linked list given a name input
 void deleteStudent(char* studentName, Node* head){

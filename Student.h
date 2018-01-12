@@ -10,10 +10,14 @@ class Student{
              ~Student();
              //Print out the nessecary information about the student
              void printStuff();
+	     void print();
              //Get the students id for searching purposes
              int getId();
+	     int getID();
              //Get the students gpa for averaging purposes
              double getGpa();
+	     //Get the students name for any reason you might need
+	     char* getName();
      private:
              char* name;
              int ID;
