@@ -14,7 +14,7 @@ using namespace std;
 
 void add(Student* newStudent, Node* &head);
 void print(Node* next);
-void deleteStudent(char* studentName, Node* head);
+void deleteStudent(int, Node* head);
 void toLowerCase(char (&arr)[80]);
 void printAverage(Node* head);
 
@@ -29,32 +29,29 @@ int main(){
           toLowerCase(input);
           //If they want to add a student to the list
           if(strcmp(input, "add") == 0){
-               cout << "Please enter the name of the student";
+               cout << "Please enter the name of the student: ";
                char nameInput[80];
-               cin >> nameInput;
+	       cin.ignore();
+               cin.getline(nameInput, 80);
                toLowerCase(nameInput);
                char* nameInputNew = new char[80];
                strcpy(nameInputNew, nameInput);
-               cout << "Please enter the student's unique identifier.";
+               cout << "Please enter the student's unique identifier: ";
                int ID = 0;
                cin >> ID;
-               cout << "Please enter the student's GPA rounded to two decimal places.";
+               cout << "Please enter the student's GPA rounded to two decimal places: ";
                double gpa = 0.0;
                cin >> gpa;
                Student* student = new Student(nameInputNew, ID, gpa);
-               delete [] nameInputNew;
                add(student, head);
+	       delete [] nameInputNew;
           }
           //If they want to delete a character
           else if(strcmp(input, "delete") == 0){
-               cout << "Enter the name of the student you would like to delete";
-               char nameInput[80];
-               cin >> nameInput;
-               toLowerCase(nameInput);
-               char* nameInputNew = new char[80];
-               strcpy(nameInputNew, nameInput);
-               deleteStudent(nameInput, head);
-               delete [] nameInputNew;
+               cout << "Enter the ID of the student you would like to delete: ";
+               int id;
+	       cin >> id;
+               deleteStudent(id, head);
           }
           //If they want to print out all of the students
           else if(strcmp(input, "print") == 0){
@@ -81,7 +78,12 @@ void toLowerCase(char (&arr)[80]){
 }
 //Function that can add a node to the linked list
 void add(Student* newStudent, Node* &head){
-     head->add(newStudent);
+	if(head == NULL){
+		head = new Node(newStudent);
+	}
+	else{
+    	 	head->add(newStudent);
+	}
 }
 //Function that prints out every node
 void print(Node* next){
@@ -89,11 +91,17 @@ void print(Node* next){
      next->print();
 }
 //Function that can delete an item of the linked list given a name input
-void deleteStudent(char* studentName, Node* head){
+void deleteStudent(int ID, Node* head){
      Node* current = head;
+     if(head->getStudent()->getId() == ID){
+	Node* newFirst = head->getNext();
+	delete head;
+	head = newFirst;
+	return;
+     }
      //Loop over all the nodes and find one with a matching name
      while(current->getNext() != NULL){
-          if(strcmp(current->getNext()->getStudent()->getName(), studentName) == 0){
+          if(current->getNext()->getStudent()->getId() == ID){
                Node* newNext = current->getNext()->getNext();
                delete current->getNext();
                current->setNext(newNext);
@@ -101,7 +109,7 @@ void deleteStudent(char* studentName, Node* head){
           }
           current = current->getNext();
      }
-     cout << "That name wasn't in the linked list";
+     cout << "That name wasn't in the linked list" << endl;
 }
 //Function that can get the average of the gpas of all the students.
 void printAverage(Node* head){
@@ -109,10 +117,10 @@ void printAverage(Node* head){
      double total = 0;
      int numStudents = 0;
      //Loop over all of the nodes and get the gpa of the student in each one
-     while(current->getNext() != NULL){
+     while(current != NULL){
              total += current->getStudent()->getGpa();
              ++numStudents;
              current = current->getNext();
      }
-     cout << total/numStudents;
+     cout << total/numStudents << endl;
 }
