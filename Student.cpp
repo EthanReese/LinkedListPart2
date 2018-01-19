@@ -20,13 +20,13 @@ Student::~Student(){
 
 void Student::printStuff(){
      cout << name << ", ";
-     cout << ID << " ,";
+     cout << ID << ", ";
      cout << gpa << endl;
 }
 
 void Student::print(){
 	cout << name << ", ";
-	cout << ID << " ,";
+	cout << ID << ", ";
 	cout << gpa << endl;
 }
 

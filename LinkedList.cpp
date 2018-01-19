@@ -122,5 +122,5 @@ void printAverage(Node* head){
              ++numStudents;
              current = current->getNext();
      }
-     cout << total/numStudents << endl;
+     cout << fixed << setprecision(2) << total/numStudents << endl;
 }
