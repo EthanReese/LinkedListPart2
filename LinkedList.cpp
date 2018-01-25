@@ -12,11 +12,11 @@ using namespace std;
 #include "Node.h"
 
 
-void add(Student* newStudent, Node* &head);
-void print(Node* next);
-void deleteStudent(int, Node* head);
+void add(Student*, Node*);
+void print(Node*);
+void deleteStudent(int, Node*);
 void toLowerCase(char (&arr)[80]);
-void printAverage(Node* head);
+void printAverage(Node*);
 
 int main(){
      //Fix the head of the linked list
@@ -43,7 +43,18 @@ int main(){
                double gpa = 0.0;
                cin >> gpa;
                Student* student = new Student(nameInputNew, ID, gpa);
-               add(student, head);
+	       if(head == NULL){
+			head = new Node(student);
+			head->setNext(NULL);
+	       }
+	       else if(head->getStudent()->getId() > ID){
+			Node* temp = head;
+			head = new Node(student);
+			head->setNext(temp);
+	       }
+	       else{
+               		add(student, head);
+	       }
 	       delete [] nameInputNew;
           }
           //If they want to delete a character
@@ -51,7 +62,14 @@ int main(){
                cout << "Enter the ID of the student you would like to delete: ";
                int id;
 	       cin >> id;
-               deleteStudent(id, head);
+     		if(head->getStudent()->getId() == id){
+			Node* newFirst = head->getNext();
+			delete head;
+			head = newFirst;
+     		}
+		else{
+               		deleteStudent(id, head);
+		}
           }
           //If they want to print out all of the students
           else if(strcmp(input, "print") == 0){
@@ -77,39 +95,45 @@ void toLowerCase(char (&arr)[80]){
      }
 }
 //Function that can add a node to the linked list
-void add(Student* newStudent, Node* &head){
-	if(head == NULL){
-		head = new Node(newStudent);
-	}
-	else{
-    	 	head->add(newStudent);
-	}
+void add(Student* newStudent, Node* current){
+		//If its the last thing in the list just tack it on the end
+		if(current->getNext() == NULL){
+			current->setNext(new Node(newStudent));
+		}
+    	 	//Checks if the next one has a lower or higher student id
+		else if(current->getNext()->getStudent()->getId() > newStudent->getID()){
+			Node* temp = current->getNext();
+			current->setNext(new Node(newStudent));
+			current->getNext()->setNext(temp);
+		}
+		//If it has a higher one than it needs to try again
+		else{
+			add(newStudent, current->getNext());
+		}
 }
 //Function that prints out every node
 void print(Node* next){
-     //Use Carson's brilliant print function that makes total sense to print out the linked list
-     next->print();
+     if(next != NULL){
+	next->getStudent()->printStuff();
+	print(next->getNext());
+     }
 }
 //Function that can delete an item of the linked list given a name input
-void deleteStudent(int ID, Node* head){
-     Node* current = head;
-     if(head->getStudent()->getId() == ID){
-	Node* newFirst = head->getNext();
-	delete head;
-	head = newFirst;
-	return;
-     }
+void deleteStudent(int ID, Node* current){
      //Loop over all the nodes and find one with a matching name
-     while(current->getNext() != NULL){
           if(current->getNext()->getStudent()->getId() == ID){
                Node* newNext = current->getNext()->getNext();
                delete current->getNext();
                current->setNext(newNext);
                return;
           }
-          current = current->getNext();
-     }
-     cout << "That name wasn't in the linked list" << endl;
+	  else if(current->getNext() == NULL){
+		cout << "That id cannot be found in the list" << endl;
+		return;
+	  }
+	  else{
+         	deleteStudent(ID, current->getNext());
+	  }
 }
 //Function that can get the average of the gpas of all the students.
 void printAverage(Node* head){
